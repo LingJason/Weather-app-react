@@ -40,3 +40,53 @@
   border-radius: 40px;
   cursor: pointer;
 }
+
+.weather-image {
+  display: flex;
+  justify-content: center;
+  margin-top: 29px;
+}
+
+.weather-temp {
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 120px;
+  font-weight: 400;
+}
+
+.weather-location {
+  display: flex;
+  justify-content: center;
+  color: white;
+  font-size: 60px;
+  font-weight: 400px;
+}
+
+.data-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 50px;
+  color: white;
+}
+
+.element {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  margin: auto;
+}
+
+.data {
+  font-size: 34px;
+  font-weight: 400;
+}
+
+.text {
+  font-size: 20px;
+  font-weight: 400; 
+}
+
+.icon {
+  margin-top: 10px;
+}
