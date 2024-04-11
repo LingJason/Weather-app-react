@@ -18,129 +18,91 @@ import windIcon from '../Assets/wind.png'
 
 let apiKey = process.env.REACT_APP_API_KEY;
 
-export const WeatherApp = () => {
+const iconMappings = {
+  '01d': clearSkyDayIcon,
+  '01n': clearSkyNightIcon,
+  '02d': fewCloudsDayIcon,
+  '02n': fewCloudsNightIcon,
+  '03d': scatteredCloudIcon,
+  '03n': scatteredCloudIcon,
+  '04d': brokenCloudIcon,
+  '04n': brokenCloudIcon,
+  '09d': showerIcon,
+  '09n': showerIcon,
+  '10d': rainDayIcon,
+  '10n': rainNightIcon,
+  '11d': thunderIcon,
+  '11n': thunderIcon,
+  '13d': snowIcon,
+  '13n': snowIcon,
+  '50d': mistIcon,
+  '50n': mistIcon,
+};
 
-  const [icon, setIcon] = useState(scatteredCloudIcon);
+
+const WeatherApp = () => {
+  const [weatherData, setWeatherData] = useState({
+    icon: scatteredCloudIcon,
+    humidity: '25%',
+    temp: '16°c',
+    wind: '5km/h',
+    location: 'Vancouver',
+  });
 
   const search = async () => {
-    const element = document.getElementsByClassName('city')
-    if(!element[0].value) {
-      return null;
-    }
-    let url = `https://api.openweathermap.org/data/2.5/weather?q=${element[0].value}&units=Metric&appid=${apiKey}`;
-
-    let response = await fetch(url);
-    let data = await response.json();
-    
-    const humidity = document.getElementsByClassName('humidity-percentage');
-    const wind = document.getElementsByClassName('wind-speed');
-    const temp = document.getElementsByClassName('weather-temp');
-    const location = document.getElementsByClassName('weather-location');
-
-    humidity[0].innerHTML = data.main.humidity + "%";
-    temp[0].innerHTML = Math.floor(data.main.temp) + "°c";
-    wind[0].innerHTML = data.wind.speed + "km/h";
-    location[0].innerHTML = data.name;
-
-    if(data.weather[0].icon === '01d') {
-      setIcon(clearSkyDayIcon);
+    const cityInput = document.querySelector('.city').value.trim();
+    if (!cityInput) {
+      return;
     }
 
-    if(data.weather[0].icon === '01n') {
-      setIcon(clearSkyNightIcon);
-    }
+    try {
+      const url = `https://api.openweathermap.org/data/2.5/weather?q=${cityInput}&units=Metric&appid=${apiKey}`;
+      const response = await fetch(url);
+      const data = await response.json();
 
-    if(data.weather[0].icon === '02d') {
-      setIcon(fewCloudsDayIcon);
+      setWeatherData({
+        icon: iconMappings[data.weather[0].icon] || scatteredCloudIcon,
+        humidity: `${data.main.humidity}%`,
+        temp: `${Math.floor(data.main.temp)}°c`,
+        wind: `${data.wind.speed}km/h`,
+        location: data.name,
+      });
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
     }
-
-    if(data.weather[0].icon === '02n') {
-      setIcon(fewCloudsNightIcon);
-    }
-
-    if(data.weather[0].icon === '03d' || data.weather[0].icon === '03n') {
-      setIcon(scatteredCloudIcon);
-    }
-
-    if(data.weather[0].icon === '04d' || data.weather[0].icon === '04n') {
-      setIcon(brokenCloudIcon);
-    }
-
-    if(data.weather[0].icon === '09d' || data.weather[0].icon === '09n') {
-      setIcon(showerIcon);
-    }
-
-    if(data.weather[0].icon === '10d') {
-      setIcon(rainDayIcon);
-    }
-
-    if(data.weather[0].icon === '10n') {
-      setIcon(rainNightIcon);
-    }
-
-    if(data.weather[0].icon === '11d' || data.weather[0].icon === '11n') {
-      setIcon(thunderIcon);
-    }
-
-    if(data.weather[0].icon === '13d' || data.weather[0].icon === '13n') {
-      setIcon(snowIcon);
-    }
-
-    if(data.weather[0].icon === '50d' || data.weather[0].icon === '50n') {
-      setIcon(mistIcon);
-    }
-  }
+  };
 
   return (
     <div className='container'>
       <div className='top-bar'>
-        <input 
-          type='text'
-          className='city' 
-          placeholder='search'/>
-        <div 
-          className='search-icon'
-          onClick={() => {
-            search()
-          }}>
-          <img src={searchIcon} alt=''/>
+        <input type='text' className='city' placeholder='Search' />
+        <div className='search-icon' onClick={search}>
+          <img src={searchIcon} alt='Search' />
         </div>
       </div>
       <div className='weather-image'>
-        <img src={icon} alt='' />
+        <img src={weatherData.icon} alt='Weather' />
       </div>
-      <div className="weather-temp">
-        24°c
-      </div>
-      <div className="weather-location">
-        London
-      </div>
-      <div className="data-container">
-        <div className="element">
-          <img src={humidIcon} alt="" className="icon" />
-          <div className="data">
-            <div className="humidity-percentage">
-              64%
-            </div>
-            <div className="text">
-              Humidity
-            </div>
+      <div className='weather-temp'>{weatherData.temp}</div>
+      <div className='weather-location'>{weatherData.location}</div>
+      <div className='data-container'>
+        <div className='element'>
+          <img src={humidIcon} alt='Humidity' className='icon' />
+          <div className='data'>
+            <div className='humidity-percentage'>{weatherData.humidity}</div>
+            <div className='text'>Humidity</div>
           </div>
         </div>
-        <div className="element">
-          <img src={windIcon} alt="" className="icon" />
-          <div className="data">
-            <div className="wind-speed">
-              18 km/h
-            </div>
-            <div className="text">
-              Wind Speed
-            </div>
+        <div className='element'>
+          <img src={windIcon} alt='Wind Speed' className='icon' />
+          <div className='data'>
+            <div className='wind-speed'>{weatherData.wind}</div>
+            <div className='text'>Wind Speed</div>
           </div>
         </div>
       </div>
     </div>
-  )
-}
+  );
+};
 
 export default WeatherApp
