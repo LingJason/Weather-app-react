@@ -2,7 +2,8 @@
 During the last few months, I was mainly using Vue because of work, however I wanted to get back into using react so I recreated simple weather application.
 
 ## Overview
-Insert gif of application
+![Overview](https://github.com/LingJason/Weather-app-react/blob/main/src/Components/Assets/demo.gif)
+
 
 ## Running the application
 1. Clone the repository into your directory.
